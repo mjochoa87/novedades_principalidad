@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Novedades · Principalidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f4f0;
+    --card:#ffffff;
+    --accent:#2d5a3d;
+    --accent-dark:#1f4029;
+    --accent-soft:#e6efe8;
+    --text:#232420;
+    --muted:#6b6b62;
+    --border:#e3e1d8;
+    --green:#2d5a3d; --green-bg:#e3efe6;
+    --amber:#93650f; --amber-bg:#fbf0da;
+    --red:#a13a3a; --red-bg:#f8e8e8;
+    --gray:#6b6b62; --gray-bg:#eceae2;
+    --shadow: 0 1px 2px rgba(30,30,20,.04), 0 4px 14px rgba(30,30,20,.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'DM Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .num, .mono{ font-family:'JetBrains Mono', monospace; }
+  h1,h2,h3,h4{ margin:0; font-weight:600; letter-spacing:-0.01em; }
+  p{ margin:0; }
+  button{ font-family:inherit; cursor:pointer; }
+  input, select, textarea{ font-family:inherit; }
+  a{ color:inherit; }
+
+  #app{ min-height:100vh; }
+
+  /* ---------- layout shells ---------- */
+  .centered-shell{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+  }
+  .brandmark{
+    display:flex; align-items:center; gap:10px; margin-bottom:28px;
+  }
+  .brandmark .dot{
+    width:10px; height:10px; border-radius:3px; background:var(--accent);
+  }
+  .brandmark span{ font-size:14px; letter-spacing:.02em; color:var(--muted); }
+
+  .welcome-card{ width:100%; max-width:440px; padding:40px 36px; text-align:center; }
+  .welcome-card h1{ font-size:24px; margin-bottom:8px; }
+  .welcome-card p.sub{ color:var(--muted); font-size:14px; margin-bottom:32px; }
+  .welcome-actions{ display:flex; flex-direction:column; gap:12px; }
+
+  .btn{
+    border-radius:9px; border:1px solid transparent; padding:12px 18px;
+    font-size:14px; font-weight:600; transition:filter .12s ease, transform .05s ease;
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-outline{ background:#fff; color:var(--text); border-color:var(--border); }
+  .btn-outline:hover{ background:var(--bg); }
+  .btn-ghost{ background:transparent; color:var(--muted); border-color:transparent; padding:8px 10px; }
+  .btn-ghost:hover{ color:var(--text); }
+  .btn-danger{ background:var(--red-bg); color:var(--red); }
+  .btn-danger:hover{ filter:brightness(0.97); }
+  .btn-sm{ padding:7px 12px; font-size:13px; border-radius:7px; }
+  .btn-icon{ padding:7px 9px; border-radius:7px; background:transparent; border:1px solid var(--border); }
+  .btn-icon:hover{ background:var(--bg); }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn-block{ width:100%; }
+
+  .field{ text-align:left; margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .field input, .field select, .field textarea{
+    width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px;
+    font-size:14px; background:#fff; color:var(--text);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--accent);
+  }
+  .field textarea{ resize:vertical; min-height:64px; }
+  .field-row{ display:flex; gap:12px; }
+  .field-row .field{ flex:1; }
+  .error-text{ color:var(--red); font-size:13px; margin-top:8px; }
+  .hint{ color:var(--muted); font-size:12.5px; margin-top:4px; }
+
+  /* ---------- asesor screen ---------- */
+  .asesor-shell{ max-width:640px; margin:0 auto; padding:32px 20px 80px; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .topbar .back{ font-size:13px; color:var(--muted); border:none; background:none; }
+  .topbar .back:hover{ color:var(--text); }
+
+  .balance-card{ padding:24px; margin-bottom:20px; }
+  .balance-head{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap; gap:8px;}
+  .balance-head h2{ font-size:19px; }
+  .balance-head .meta{ color:var(--muted); font-size:13px; }
+  .period-block{ border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:12px; }
+  .period-block + .period-block{ margin-top:12px; }
+  .period-title{ font-size:13px; font-weight:600; color:var(--accent-dark); margin-bottom:10px; text-transform:none; }
+  .period-stats{ display:flex; gap:20px; flex-wrap:wrap; }
+  .stat{ min-width:80px; }
+  .stat .n{ font-size:22px; font-weight:600; }
+  .stat .l{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .progress-track{ background:var(--gray-bg); height:8px; border-radius:5px; margin-top:12px; overflow:hidden; }
+  .progress-fill{ height:100%; background:var(--accent); border-radius:5px; }
+
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:20px;
+    font-size:12px; font-weight:600;
+  }
+  .badge-green{ background:var(--green-bg); color:var(--green); }
+  .badge-amber{ background:var(--amber-bg); color:var(--amber); }
+  .badge-red{ background:var(--red-bg); color:var(--red); }
+  .badge-gray{ background:var(--gray-bg); color:var(--gray); }
+
+  .form-card{ padding:24px; }
+  .form-card h3{ font-size:16px; margin-bottom:16px; }
+
+  .date-block{
+    background:var(--bg); border:1px solid var(--border); border-radius:9px;
+    padding:12px 14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    font-family:'JetBrains Mono', monospace; font-size:14px; margin:10px 0;
+  }
+  .date-block .lbl{ font-size:10.5px; letter-spacing:.03em; color:var(--muted); display:block; font-weight:600; }
+  .date-block .arrow{ color:var(--muted); }
+
+  /* ---------- admin shell ---------- */
+  .admin-shell{ display:flex; min-height:100vh; }
+  .sidebar{
+    width:216px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border);
+    padding:22px 14px; display:flex; flex-direction:column;
+  }
+  .sidebar .brandmark{ padding:0 8px; }
+  .navlist{ display:flex; flex-direction:column; gap:2px; margin-top:6px; }
+  .navitem{
+    display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px;
+    font-size:13.5px; font-weight:500; color:var(--muted); border:none; background:none; text-align:left;
+    width:100%;
+  }
+  .navitem:hover{ background:var(--bg); color:var(--text); }
+  .navitem.active{ background:var(--accent-soft); color:var(--accent-dark); font-weight:600; }
+  .navitem .dotcount{
+    margin-left:auto; background:var(--red); color:#fff; font-size:10.5px; font-weight:700;
+    border-radius:20px; padding:1px 6px; min-width:16px; text-align:center;
+  }
+  .sidebar-footer{ margin-top:auto; padding-top:14px; border-top:1px solid var(--border); }
+
+  .main-area{ flex:1; padding:28px 34px 60px; max-width:1240px; }
+  .page-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;}
+  .page-head h1{ font-size:21px; }
+  .page-head .sub{ color:var(--muted); font-size:13px; margin-top:3px; }
+
+  .metrics-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:22px; }
+  .metric-card{ padding:16px 18px; }
+  .metric-card .n{ font-size:24px; font-weight:700; }
+  .metric-card .l{ font-size:12.5px; color:var(--muted); margin-top:4px; }
+
+  .toolbar{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .toolbar input[type=text]{
+    padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13.5px; min-width:220px; background:#fff;
+  }
+  .toolbar select{ padding:9px 10px; border:1px solid var(--border); border-radius:8px; font-size:13.5px; background:#fff; }
+  .toolbar .spacer{ flex:1; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  .table-card{ overflow-x:auto; padding:4px; }
+  thead th{
+    text-align:left; padding:10px 14px; color:var(--muted); font-weight:600; font-size:11.5px;
+    letter-spacing:.02em; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  tbody td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:#fafaf7; }
+  tr.desvinculado td{ opacity:.55; }
+  tr.desvinculado .nombre{ text-decoration:line-through; }
+  .nombre{ font-weight:600; }
+  .subtext{ color:var(--muted); font-size:12px; margin-top:2px; }
+  .rowactions{ display:flex; gap:6px; }
+
+  .period-mini{ font-size:12px; margin-bottom:4px; }
+  .period-mini .lab{ color:var(--muted); margin-right:5px; }
+  .period-mini .frac{ font-family:'JetBrains Mono', monospace; font-weight:600; }
+
+  .req-dates{
+    display:inline-flex; gap:10px; align-items:center; background:var(--bg); border:1px solid var(--border);
+    border-radius:8px; padding:8px 12px; font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .req-dates .part .lab{ font-size:9.5px; color:var(--muted); letter-spacing:.03em; display:block; font-weight:600; }
+  .req-dates .arrow{ color:var(--muted); }
+
+  .alert-box{
+    display:flex; gap:14px; align-items:flex-start; padding:16px 18px; border-radius:10px;
+    border:1px solid var(--border); margin-bottom:12px;
+  }
+  .alert-box.pend{ background:var(--amber-bg); border-color:#eddba6; }
+  .alert-box.overlap{ background:var(--red-bg); border-color:#eeccca; }
+  .alert-box .icon{ font-size:18px; line-height:1; }
+  .alert-box .body{ flex:1; }
+  .alert-box .title2{ font-weight:600; font-size:14px; margin-bottom:3px; }
+  .alert-box .desc{ font-size:13px; color:var(--muted); }
+  .alert-box .actions{ display:flex; gap:8px; margin-top:10px; }
+
+  .empty-state{ text-align:center; padding:50px 20px; color:var(--muted); }
+  .empty-state .big{ font-size:15px; color:var(--text); font-weight:600; margin-bottom:6px; }
+
+  /* modal */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(30,30,24,.4); display:flex; align-items:center;
+    justify-content:center; padding:20px; z-index:50;
+  }
+  .modal-card{
+    width:100%; max-width:520px; max-height:90vh; overflow-y:auto; padding:26px 28px;
+  }
+  .modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+  .modal-head h3{ font-size:17px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+  .toggle-pair{ display:flex; gap:8px; }
+  .toggle-pair button{ flex:1; padding:9px; border-radius:8px; border:1px solid var(--border); background:#fff; font-size:13px; font-weight:600; color:var(--muted); }
+  .toggle-pair button.on-yes.selected{ background:var(--green-bg); color:var(--green); border-color:#c7e0cf; }
+  .toggle-pair button.on-no.selected{ background:var(--red-bg); color:var(--red); border-color:#eeccca; }
+
+  .feriado-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 4px; border-bottom:1px solid var(--border); font-size:13.5px; }
+  .feriado-row:last-child{ border-bottom:none; }
+  .feriado-row .fd{ font-family:'JetBrains Mono', monospace; font-weight:600; margin-right:10px; }
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--accent-dark); color:#fff;
+    padding:11px 20px; border-radius:9px; font-size:13.5px; box-shadow:var(--shadow); z-index:100;
+    opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+  .connbadge{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); }
+  .connbadge .led{ width:7px; height:7px; border-radius:50%; background:#9aa; }
+  .connbadge .led.ok{ background:var(--green); }
+  .connbadge .led.bad{ background:var(--red); }
+
+  .tabbtn-mobile{ display:none; }
+
+  @media (max-width: 880px){
+    .admin-shell{ flex-direction:column; }
+    .sidebar{ width:100%; flex-direction:row; align-items:center; padding:12px 14px; overflow-x:auto; border-right:none; border-bottom:1px solid var(--border); }
+    .sidebar .brandmark{ margin-bottom:0; margin-right:8px; }
+    .navlist{ flex-direction:row; margin-top:0; }
+    .navitem{ white-space:nowrap; }
+    .sidebar-footer{ display:none; }
+    .main-area{ padding:20px 16px 50px; }
+    .field-row{ flex-direction:column; }
+  }
+
+  /* ---------- extras del portal de novedades ---------- */
+  .chip{ display:inline-block; border:1px solid; border-radius:6px; padding:1px 8px; font-size:12px; font-weight:600; white-space:nowrap; }
+  .toggle-pair button.sel{ background:var(--accent-soft); color:var(--accent-dark); border-color:#bfd6c6; }
+  .check{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text); }
+  .check input[type=date]{ padding:7px 9px; border:1px solid var(--border); border-radius:8px; background:#fff; font-size:13px; }
+  .legend{ display:flex; flex-wrap:wrap; gap:6px 16px; font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ display:inline-block; width:14px; height:14px; border-radius:3px; }
+  .grid-wrap{ overflow-x:auto; }
+  .gtable{ width:auto; border-collapse:separate; border-spacing:0; font-size:12px; }
+  .gtable th, .gtable td{ padding:2px; text-align:center; border-bottom:1px solid var(--border); min-width:30px; }
+  .gtable thead th{ padding:4px 2px; font-size:11px; font-weight:500; letter-spacing:0; }
+  .gtable th.name, .gtable td.name{ position:sticky; left:0; z-index:1; background:#fff; text-align:left; padding:6px 12px; min-width:190px; white-space:nowrap; }
+  .gtable th.finde, .gtable td.finde{ background:#f4f3ee; }
+  .gtable th.hoy{ background:var(--accent); color:#fff; }
+  .gtable th .dn{ color:var(--text); font-weight:600; }
+  .gtable th.hoy .dn{ color:#fff; }
+  .gtable th.tot, .gtable td.tot{ text-align:right; padding:6px 12px; white-space:nowrap; min-width:70px; }
+  .gtable tbody tr:hover td{ background:#fafaf7; }
+  .gtable tbody tr:hover td.finde{ background:#f1f0ea; }
+  .gtable tfoot td{ border-bottom:none; padding:8px 2px; }
+  .gtable tfoot td.name{ padding:8px 12px; }
+  .gcell{ width:100%; height:26px; border-radius:4px; font-size:11px; font-weight:700; font-family:inherit; padding:0; }
+  .toolbar input[type=month]{ font-family:inherit; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getDatabase, ref, set, onValue, update, push, remove
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+/* =========================================================
+   FIREBASE (misma base de datos que el portal de vacaciones)
+   Solo escribe en "novedades" y "novedades_config".
+   No modifica personas, solicitudes ni config.
+========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAmtmuFaKcgzS3JqQ68w9jxbsDtUCRPmho",
+  authDomain: "vacaciones-principalidad.firebaseapp.com",
+  databaseURL: "https://vacaciones-principalidad-default-rtdb.firebaseio.com",
+  projectId: "vacaciones-principalidad",
+  storageBucket: "vacaciones-principalidad.firebasestorage.app",
+  messagingSenderId: "721235726641",
+  appId: "1:721235726641:web:0f10dc05be7c2919316010",
+  measurementId: "G-X3MC1K0YWS"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+
+/* =========================================================
+   CONSTANTES
+========================================================= */
+const CLAVE_DEFAULT = "Principalidad2026";
+const TURNO_DEFECTO = { desde: "09:00", hasta: "18:00" };
+
+const MOTIVOS = [
+  { id: "estudio",    label: "Día de estudio",         color: "#5B4BC4", todoDia: true,  cod: "ES" },
+  { id: "enfermedad", label: "Día de enfermedad",      color: "#C2410C", todoDia: true,  cod: "EN" },
+  { id: "medico",     label: "Turno médico",           color: "#0F766E", todoDia: false, cod: "ME" },
+  { id: "salida",     label: "Desconexión anticipada", color: "#B45309", todoDia: false, cod: "DA" },
+  { id: "entrada",    label: "Conexión tardía",        color: "#1D4ED8", todoDia: false, cod: "CT" },
+  { id: "otro",       label: "Otro motivo",            color: "#475569", todoDia: false, cod: "OT" },
+];
+const motivoDe = (id) => MOTIVOS.find((m) => m.id === id) || MOTIVOS[5];
+const LETRAS_DIA = ["D", "L", "M", "M", "J", "V", "S"];
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad2 = (n) => String(n).padStart(2, "0");
+const ymd = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const hoyISO = () => ymd(new Date());
+const fmtFecha = (iso) => { if (!iso) return ""; const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const fmtRango = (n) => (n.desde === n.hasta ? fmtFecha(n.desde) : `${fmtFecha(n.desde)} → ${fmtFecha(n.hasta)}`);
+const fmtHorario = (n) => (n.todoDia ? "Todo el día" : `${n.horaDesde || "inicio de turno"} a ${n.horaHasta || "fin de turno"}`);
+const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; };
+const fmtDur = (min) => {
+  if (!min) return "0 h";
+  const h = Math.floor(min / 60), m = Math.round(min % 60);
+  if (h === 0) return `${m} min`;
+  return m === 0 ? `${h} h` : `${h} h ${m} min`;
+};
+const horasDec = (min) => (min / 60).toFixed(2).replace(".", ",");
+
+function diasDelRango(desde, hasta) {
+  const out = [];
+  const [y, m, d] = desde.split("-").map(Number);
+  const cur = new Date(y, m - 1, d, 12);
+  let guard = 0;
+  while (guard++ < 400) {
+    const iso = ymd(cur);
+    if (iso > hasta) break;
+    out.push(iso);
+    cur.setDate(cur.getDate() + 1);
+  }
+  return out;
+}
+function esFinde(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const w = new Date(y, m - 1, d, 12).getDay();
+  return w === 0 || w === 6;
+}
+
+/** Minutos no operativos de UN día para una novedad */
+function minutosPorDia(n) {
+  const t0 = toMin(n.turnoDesde || TURNO_DEFECTO.desde);
+  let t1 = toMin(n.turnoHasta || TURNO_DEFECTO.hasta);
+  if (t1 <= t0) t1 += 1440;
+  if (n.todoDia) return t1 - t0;
+  let a = n.horaDesde ? toMin(n.horaDesde) : t0;
+  let b = n.horaHasta ? toMin(n.horaHasta) : t1;
+  if (a < t0) a += 1440;
+  if (b <= a) b += 1440;
+  a = Math.max(a, t0);
+  b = Math.min(b, t1);
+  return Math.max(0, b - a);
+}
+
+function descargarCSV(nombre, cab, filas) {
+  const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const csv = "\uFEFF" + [cab, ...filas].map((r) => r.map(q).join(";")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = nombre; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* =========================================================
+   ESTADO LOCAL (se llena vía onValue)
+========================================================= */
+let personas = {};
+let novedades = {};
+let config = {};
+let cfgNov = {};
+let conectado = false;
+let errorDB = "";
+const dataReady = { personas: false, novedades: false };
+
+const formVacio = () => ({ tipo: "estudio", fecha: hoyISO(), hasta: hoyISO(), varios: false, todoDia: true, horaDesde: "", horaHasta: "", obs: "", error: "", enviando: false });
+const state = {
+  screen: "welcome",
+  asesorSeleccionado: "",
+  form: formVacio(),
+  adminTab: "grilla",
+  adminLoginError: "",
+  mes: hoyISO().slice(0, 7),
+  f: { soloConf: false, todos: false, contarFinde: true, buscar: "", estado: "todos", motivo: "todos", desde: hoyISO(), hasta: "" },
+  modal: null,
+};
+
+const novedadesArray = () => Object.entries(novedades).map(([id, n]) => ({ id, ...n }));
+const asesoresActivos = () =>
+  Object.entries(personas)
+    .filter(([, p]) => p && p.activo !== false && p.rol !== "TL")
+    .map(([id, p]) => ({ id, ...p }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre));
+const nombreDe = (n) => (personas[n.personaId] ? personas[n.personaId].nombre : n.nombre || "(sin nombre)");
+const turnoDefecto = () => ({
+  desde: (cfgNov.turno && cfgNov.turno.desde) || TURNO_DEFECTO.desde,
+  hasta: (cfgNov.turno && cfgNov.turno.hasta) || TURNO_DEFECTO.hasta,
+});
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+function iniciarListeners() {
+  const falla = (que) => (err) => {
+    errorDB = `No se pudo leer "${que}" de la base de datos (${err && err.code ? err.code : "error"}). Si es la primera vez, revisá las reglas de Firebase.`;
+    renderDesdeDatos();
+  };
+  onValue(ref(db, ".info/connected"), (s) => { conectado = s.val() === true; renderDesdeDatos(); });
+  onValue(ref(db, "personas"), (s) => { personas = s.val() || {}; dataReady.personas = true; renderDesdeDatos(); }, falla("personas"));
+  onValue(ref(db, "novedades"), (s) => { novedades = s.val() || {}; dataReady.novedades = true; errorDB = ""; renderDesdeDatos(); }, falla("novedades"));
+  onValue(ref(db, "config"), (s) => { config = s.val() || {}; renderDesdeDatos(); }, () => {});
+  onValue(ref(db, "novedades_config"), (s) => { cfgNov = s.val() || {}; renderDesdeDatos(); }, () => {});
+}
+async function guardarNovedad(data) {
+  const nueva = push(ref(db, "novedades"));
+  await set(nueva, data);
+}
+const actualizarEstado = (id, estado) => update(ref(db, `novedades/${id}`), { estado });
+const borrarNovedad = (id) => remove(ref(db, `novedades/${id}`));
+
+/* =========================================================
+   TOAST
+========================================================= */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+}
+
+/* =========================================================
+   RENDER PRINCIPAL
+========================================================= */
+let pendingRender = false;
+function campoEnUso() {
+  const a = document.activeElement;
+  return !!a && ["INPUT", "TEXTAREA", "SELECT"].includes(a.tagName);
+}
+function renderDesdeDatos() {
+  if (campoEnUso()) { pendingRender = true; return; }
+  render();
+}
+document.addEventListener("focusout", () => {
+  setTimeout(() => { if (pendingRender && !campoEnUso()) render(); }, 80);
+});
+function render() {
+  pendingRender = false;
+  const ae = document.activeElement;
+  const focoId = ae && ae.id ? ae.id : null;
+  let ini = null, fin = null;
+  if (focoId && typeof ae.selectionStart === "number") { ini = ae.selectionStart; fin = ae.selectionEnd; }
+  renderInterno();
+  if (focoId) {
+    const el = document.getElementById(focoId);
+    if (el) { el.focus(); if (ini !== null && el.setSelectionRange) { try { el.setSelectionRange(ini, fin); } catch (e) {} } }
+  }
+}
+function renderInterno() {
+  const app = document.getElementById("app");
+  if (!(dataReady.personas && dataReady.novedades)) {
+    app.innerHTML = `<div class="centered-shell"><div style="text-align:center">
+      <p style="color:var(--muted); font-size:14px;">${errorDB ? "" : "Conectando con la base de datos…"}</p>
+      ${errorDB ? `<p class="error-text" style="max-width:420px">${esc(errorDB)}</p>` : ""}</div></div>`;
+    return;
+  }
+  if (state.screen === "welcome") app.innerHTML = renderWelcome();
+  else if (state.screen === "asesor") app.innerHTML = renderAsesor();
+  else if (state.screen === "admin-login") app.innerHTML = renderAdminLogin();
+  else if (state.screen === "admin") app.innerHTML = renderAdmin();
+  if (state.modal) {
+    const host = document.createElement("div");
+    host.innerHTML = renderModalCelda();
+    if (host.firstElementChild) app.appendChild(host.firstElementChild);
+  }
+}
+
+const badgeEstado = (e) =>
+  e === "confirmada" ? `<span class="badge badge-green">Confirmada</span>`
+  : e === "rechazada" ? `<span class="badge badge-red">Rechazada</span>`
+  : `<span class="badge badge-amber">Pendiente</span>`;
+const chipMotivo = (id) => {
+  const m = motivoDe(id);
+  return `<span class="chip" style="color:${m.color}; background:${m.color}1A; border-color:${m.color}40">${esc(m.label)}</span>`;
+};
+const connBadge = () => `<span class="connbadge"><span class="led ${conectado ? "ok" : "bad"}"></span>${conectado ? "Sincronizado" : "Sin conexión"}</span>`;
+const bannerError = () => (errorDB ? `<p class="error-text" style="margin:0 0 14px">${esc(errorDB)}</p>` : "");
+
+/* ---------- WELCOME ---------- */
+function renderWelcome() {
+  return `
+    <div class="centered-shell">
+      <div class="card welcome-card">
+        <div class="brandmark" style="justify-content:center;"><div class="dot"></div><span>PRINCIPALIDAD</span></div>
+        <h1>Novedades de asesores</h1>
+        <p class="sub">Elegí cómo querés ingresar</p>
+        <div class="welcome-actions">
+          <button class="btn btn-primary btn-block" onclick="App.ir('asesor')">Soy asesor</button>
+          <button class="btn btn-outline btn-block" onclick="App.ir('admin-login')">Acceso administrador</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------- ASESOR ---------- */
+function calcPreview() {
+  const f = state.form;
+  if (!f.fecha || !f.hasta || f.hasta < f.fecha) return "";
+  const t = turnoDefecto();
+  const dias = diasDelRango(f.fecha, f.hasta).length;
+  const porDia = minutosPorDia({ todoDia: f.todoDia, horaDesde: f.horaDesde, horaHasta: f.horaHasta, turnoDesde: t.desde, turnoHasta: t.hasta });
+  return `${fmtDur(porDia)} por día × ${dias} ${dias === 1 ? "día" : "días"} = <b>${fmtDur(dias * porDia)} no operativo</b>`;
+}
+
+function renderAsesor() {
+  const activos = asesoresActivos();
+  const sel = state.asesorSeleccionado;
+  const f = state.form;
+  const persona = sel ? personas[sel] : null;
+  const mias = persona
+    ? novedadesArray().filter((n) => n.personaId === sel).sort((a, b) => b.desde.localeCompare(a.desde)).slice(0, 15)
+    : [];
+
+  return `
+    <div class="asesor-shell">
+      <div class="topbar">
+        <button class="back" onclick="App.ir('welcome')">← Volver</button>
+        ${connBadge()}
+      </div>
+      <h1 style="margin-bottom:16px;">Cargar novedad</h1>
+      ${bannerError()}
+
+      <div class="card" style="padding:20px 22px; margin-bottom:20px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Tu nombre</label>
+          <select onchange="App.seleccionarAsesor(this.value)">
+            <option value="">Seleccioná tu nombre…</option>
+            ${activos.map((p) => `<option value="${esc(p.id)}" ${p.id === sel ? "selected" : ""}>${esc(p.nombre)}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      ${persona ? `
+        <div class="card form-card" style="margin-bottom:20px;">
+          <h3>Avisá cuándo vas a estar inactivo</h3>
+
+          <div class="field">
+            <label>Motivo</label>
+            <select onchange="App.setMotivo(this.value)">
+              ${MOTIVOS.map((m) => `<option value="${m.id}" ${f.tipo === m.id ? "selected" : ""}>${esc(m.label)}</option>`).join("")}
+            </select>
+          </div>
+
+          <div class="field">
+            <label>¿Cuántos días?</label>
+            <div class="toggle-pair">
+              <button type="button" class="${!f.varios ? "sel" : ""}" onclick="App.setVarios(false)">Un solo día</button>
+              <button type="button" class="${f.varios ? "sel" : ""}" onclick="App.setVarios(true)">Varios días</button>
+            </div>
+          </div>
+
+          ${f.varios ? `
+            <div class="field-row">
+              <div class="field"><label>Desde el día</label><input type="date" value="${esc(f.fecha)}" onchange="App.setFecha(this.value)"></div>
+              <div class="field"><label>Hasta el día</label><input type="date" value="${esc(f.hasta)}" min="${esc(f.fecha)}" onchange="App.setHasta(this.value)"></div>
+            </div>` : `
+            <div class="field"><label>Día</label><input type="date" value="${esc(f.fecha)}" onchange="App.setFecha(this.value)"></div>`}
+
+          <div class="field">
+            <label>¿Cuánto tiempo?</label>
+            <div class="toggle-pair">
+              <button type="button" class="${f.todoDia ? "sel" : ""}" onclick="App.setTodoDia(true)">Todo el día</button>
+              <button type="button" class="${!f.todoDia ? "sel" : ""}" onclick="App.setTodoDia(false)">Una franja horaria</button>
+            </div>
+          </div>
+
+          ${!f.todoDia ? `
+            <div class="field-row">
+              <div class="field"><label>Desde las</label><input type="time" value="${esc(f.horaDesde)}" oninput="App.setCampo('horaDesde', this.value)"><p class="hint">Vacío = desde que empieza tu turno</p></div>
+              <div class="field"><label>Hasta las</label><input type="time" value="${esc(f.horaHasta)}" oninput="App.setCampo('horaHasta', this.value)"><p class="hint">Vacío = hasta que termina tu turno</p></div>
+            </div>
+            ${f.varios ? `<p class="hint" style="margin:-4px 0 12px">La franja se repite cada día del rango.</p>` : ""}` : ""}
+
+          <p class="hint" id="preview" style="margin:0 0 14px">${calcPreview()}</p>
+
+          <div class="field">
+            <label>Comentario (opcional)</label>
+            <textarea id="obs" oninput="App.setCampo('obs', this.value)" placeholder="Algo que quieras aclarar…">${esc(f.obs)}</textarea>
+          </div>
+
+          ${f.error ? `<p class="error-text" style="margin:0 0 12px">${esc(f.error)}</p>` : ""}
+          <button class="btn btn-primary btn-block" ${f.enviando ? "disabled" : ""} onclick="App.enviar()">${f.enviando ? "Guardando…" : "Registrar novedad"}</button>
+        </div>
+
+        <div class="card" style="padding:20px 22px;">
+          <h3 style="margin-bottom:12px; font-size:15px;">Mis novedades</h3>
+          ${mias.length === 0 ? `<p class="hint">Todavía no cargaste ninguna novedad.</p>` : mias.map((n) => `
+            <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+              <div class="req-dates" style="margin:0 0 8px;">
+                <div class="part"><span class="lab">${n.desde === n.hasta ? "DÍA" : "DESDE"}</span>${esc(fmtFecha(n.desde))}</div>
+                ${n.desde !== n.hasta ? `<span class="arrow">→</span><div class="part"><span class="lab">HASTA</span>${esc(fmtFecha(n.hasta))}</div>` : ""}
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span class="subtext">${chipMotivo(n.tipo)} ${esc(fmtHorario(n))}</span>
+                <span style="display:flex; gap:8px; align-items:center;">
+                  ${badgeEstado(n.estado)}
+                  ${n.estado === "pendiente" ? `<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="App.cancelar('${esc(n.id)}')">Cancelar</button>` : ""}
+                </span>
+              </div>
+            </div>`).join("")}
+        </div>
+      ` : `<p class="hint">Elegí tu nombre para cargar una novedad.</p>`}
+    </div>`;
+}
+
+/* ---------- ADMIN LOGIN ---------- */
+function renderAdminLogin() {
+  return `
+    <div class="centered-shell">
+      <div class="card welcome-card">
+        <div class="brandmark" style="justify-content:center;"><div class="dot"></div><span>PRINCIPALIDAD</span></div>
+        <h1>Acceso administrador</h1>
+        <p class="sub">Ingresá la clave maestra</p>
+        <form onsubmit="App.loginAdmin(event)">
+          <div class="field"><label>Clave</label><input type="password" name="clave" autofocus required></div>
+          ${state.adminLoginError ? `<p class="error-text">${esc(state.adminLoginError)}</p>` : ""}
+          <button class="btn btn-primary btn-block" type="submit" style="margin-top:6px;">Ingresar</button>
+        </form>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="App.ir('welcome')">← Volver</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- ADMIN SHELL ---------- */
+function renderAdmin() {
+  const pend = novedadesArray().filter((n) => n.estado === "pendiente").length;
+  const tabs = [["grilla", "Grilla mensual"], ["pedidos", "Novedades"], ["resumen", "Resumen mensual"], ["config", "Config"]];
+  return `
+    <div class="admin-shell">
+      <div class="sidebar">
+        <div class="brandmark"><div class="dot"></div><span>PRINCIPALIDAD</span></div>
+        <div class="navlist">
+          ${tabs.map(([k, label]) => `
+            <button class="navitem ${state.adminTab === k ? "active" : ""}" onclick="App.setTab('${k}')">
+              ${label}${k === "pedidos" && pend > 0 ? `<span class="dotcount">${pend}</span>` : ""}
+            </button>`).join("")}
+        </div>
+        <div class="sidebar-footer">
+          <div style="margin-bottom:10px">${connBadge()}</div>
+          <button class="btn btn-outline btn-block btn-sm" onclick="App.ir('welcome')">Salir</button>
+        </div>
+      </div>
+      <div class="main-area">
+        ${bannerError()}
+        ${state.adminTab === "grilla" ? renderTabGrilla() : ""}
+        ${state.adminTab === "pedidos" ? renderTabPedidos() : ""}
+        ${state.adminTab === "resumen" ? renderTabResumen() : ""}
+        ${state.adminTab === "config" ? renderTabConfig() : ""}
+      </div>
+    </div>`;
+}
+
+/* ---------- TAB: GRILLA ---------- */
+function datosGrilla() {
+  const mes = state.mes;
+  const [y, m] = mes.split("-").map(Number);
+  const nDias = new Date(y, m, 0).getDate();
+  const dias = Array.from({ length: nDias }, (_, i) => ({ iso: `${mes}-${pad2(i + 1)}`, num: i + 1, dow: new Date(y, m - 1, i + 1, 12).getDay() }));
+  const ini = dias[0].iso, fin = dias[dias.length - 1].iso;
+  const filas = {};
+  const asegurar = (pid, nombre) => (filas[pid] ||= { pid, nombre, celdas: {}, total: 0 });
+  if (state.f.todos) asesoresActivos().forEach((a) => asegurar(a.id, a.nombre));
+  novedadesArray()
+    .filter((n) => n.estado !== "rechazada" && (!state.f.soloConf || n.estado === "confirmada"))
+    .filter((n) => n.hasta >= ini && n.desde <= fin)
+    .forEach((n) => {
+      const r = asegurar(n.personaId, nombreDe(n));
+      const pd = minutosPorDia(n);
+      diasDelRango(n.desde, n.hasta).forEach((d) => {
+        if (d < ini || d > fin) return;
+        (r.celdas[d] ||= []).push(n);
+        r.total += pd;
+      });
+    });
+  const ql = state.f.buscar.trim().toLowerCase();
+  const lista = Object.values(filas).filter((r) => !ql || r.nombre.toLowerCase().includes(ql)).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const porDia = {};
+  lista.forEach((r) => Object.keys(r.celdas).forEach((d) => (porDia[d] = (porDia[d] || 0) + 1)));
+  const totalDias = lista.reduce((a, r) => a + Object.keys(r.celdas).length, 0);
+  const totalMin = lista.reduce((a, r) => a + r.total, 0);
+  return { dias, filas: lista, porDia, totalDias, totalMin };
+}
+
+function renderTabGrilla() {
+  const { dias, filas, porDia, totalDias, totalMin } = datosGrilla();
+  const hoy = hoyISO();
+  const inactivosHoy = novedadesArray().filter((n) => n.estado !== "rechazada" && n.desde <= hoy && n.hasta >= hoy);
+  const pend = novedadesArray().filter((n) => n.estado === "pendiente").length;
+
+  return `
+    <div class="page-head">
+      <div><h1>Grilla mensual</h1><p class="sub">Quién está inactivo cada día y cuánto tiempo acumula en el mes</p></div>
+    </div>
+
+    <div class="metrics-row">
+      <div class="card metric-card"><div class="n num">${inactivosHoy.length}</div><div class="l">Inactivos hoy</div></div>
+      <div class="card metric-card"><div class="n num">${pend}</div><div class="l">Pendientes de revisar</div></div>
+      <div class="card metric-card"><div class="n num">${totalDias}</div><div class="l">Días inactivos del mes</div></div>
+      <div class="card metric-card"><div class="n num">${esc(fmtDur(totalMin))}</div><div class="l">No operativo del mes</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input type="month" value="${esc(state.mes)}" onchange="App.setMes(this.value)" style="padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:#fff;">
+      <input type="text" id="buscar" placeholder="Buscar asesor…" value="${esc(state.f.buscar)}" oninput="App.setFiltroTexto('buscar', this.value)">
+      <label class="check"><input type="checkbox" ${state.f.soloConf ? "checked" : ""} onchange="App.setFiltro('soloConf', this.checked)"> Solo confirmadas</label>
+      <label class="check"><input type="checkbox" ${state.f.todos ? "checked" : ""} onchange="App.setFiltro('todos', this.checked)"> Mostrar todos los asesores</label>
+      <span class="spacer"></span>
+      <button class="btn btn-outline btn-sm" onclick="App.exportarGrilla()">Exportar CSV</button>
+    </div>
+
+    <div class="legend">
+      ${MOTIVOS.map((m) => `<span><i style="background:${m.color}"></i>${m.cod} ${esc(m.label)}</span>`).join("")}
+      <span><i style="background:#6b6b6222; border:1px dashed #6b6b62"></i>Punteada = solo una franja del día</span>
+    </div>
+
+    <div class="card table-card">
+      ${filas.length === 0 ? `<div class="empty-state"><div class="big">Sin novedades en este mes</div>Probá otro mes o marcá "Mostrar todos los asesores".</div>` : `
+      <div class="grid-wrap">
+        <table class="gtable">
+          <thead>
+            <tr>
+              <th class="name">Asesor</th>
+              ${dias.map((d) => `<th class="${d.iso === hoy ? "hoy" : d.dow === 0 || d.dow === 6 ? "finde" : ""}"><div>${LETRAS_DIA[d.dow]}</div><div class="dn">${d.num}</div></th>`).join("")}
+              <th class="tot">Días</th>
+              <th class="tot">Horas</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filas.map((r) => `
+              <tr>
+                <td class="name"><span class="nombre">${esc(r.nombre)}</span></td>
+                ${dias.map((d) => {
+                  const ns = r.celdas[d.iso];
+                  const finde = d.dow === 0 || d.dow === 6;
+                  if (!ns) return `<td class="${finde ? "finde" : ""}"></td>`;
+                  const n = ns[0], mt = motivoDe(n.tipo);
+                  const completo = ns.some((x) => x.todoDia);
+                  const tip = ns.map((x) => `${motivoDe(x.tipo).label}: ${fmtHorario(x)}${x.estado === "pendiente" ? " (pendiente)" : ""}`).join("\n");
+                  const pendiente = ns.every((x) => x.estado === "pendiente");
+                  return `<td><button class="gcell" title="${esc(tip)}" style="background:${completo ? mt.color : mt.color + "22"}; color:${completo ? "#fff" : mt.color}; border:1px ${completo ? "solid" : "dashed"} ${mt.color}; opacity:${pendiente ? 0.65 : 1}" onclick="App.abrirCelda('${esc(r.pid)}','${d.iso}')">${mt.cod}${ns.length > 1 ? "+" : ""}</button></td>`;
+                }).join("")}
+                <td class="tot"><b>${Object.keys(r.celdas).length}</b></td>
+                <td class="tot"><b>${esc(fmtDur(r.total))}</b></td>
+              </tr>`).join("")}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="name" style="color:var(--muted)">Asesores inactivos</td>
+              ${dias.map((d) => `<td style="font-weight:600; color:${porDia[d.iso] ? "var(--text)" : "var(--border)"}">${porDia[d.iso] || "–"}</td>`).join("")}
+              <td class="tot"><b>${totalDias}</b></td>
+              <td class="tot"><b>${esc(fmtDur(totalMin))}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`}
+    </div>
+    <p class="hint" style="margin-top:10px">Las celdas más claras son novedades pendientes. Las rechazadas no se muestran ni se cuentan. Tocá una celda para ver el detalle.</p>`;
+}
+
+function renderModalCelda() {
+  const { pid, dia } = state.modal;
+  const ns = novedadesArray().filter((n) => n.personaId === pid && n.estado !== "rechazada" && n.desde <= dia && n.hasta >= dia);
+  const nombre = personas[pid] ? personas[pid].nombre : (ns[0] ? nombreDe(ns[0]) : "");
+  return `
+    <div class="modal-overlay" onclick="if(event.target===this) App.cerrarModal()">
+      <div class="card modal-card">
+        <div class="modal-head"><h3>${esc(nombre)} · ${esc(fmtFecha(dia))}</h3><button class="btn btn-icon" aria-label="Cerrar" onclick="App.cerrarModal()">✕</button></div>
+        ${ns.length === 0 ? `<p class="hint">Ya no hay novedades para este día.</p>` : ns.map((n) => `
+          <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">${chipMotivo(n.tipo)} ${badgeEstado(n.estado)}</div>
+            <p style="font-size:13.5px">${esc(fmtHorario(n))} · ${esc(fmtDur(minutosPorDia(n)))} · ${esc(fmtRango(n))}</p>
+            ${n.obs ? `<p class="subtext">${esc(n.obs)}</p>` : ""}
+            <div class="rowactions" style="margin-top:10px">
+              <button class="btn btn-outline btn-sm" onclick="App.setEstado('${esc(n.id)}','confirmada')">Confirmar</button>
+              <button class="btn btn-danger btn-sm" onclick="App.setEstado('${esc(n.id)}','rechazada')">Rechazar</button>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------- TAB: NOVEDADES (lista) ---------- */
+function renderTabPedidos() {
+  const f = state.f;
+  const ql = f.buscar.trim().toLowerCase();
+  const lista = novedadesArray()
+    .filter((n) => (!f.desde || n.hasta >= f.desde) && (!f.hasta || n.desde <= f.hasta))
+    .filter((n) => f.motivo === "todos" || n.tipo === f.motivo)
+    .filter((n) => f.estado === "todos" || n.estado === f.estado)
+    .filter((n) => !ql || nombreDe(n).toLowerCase().includes(ql))
+    .sort((a, b) => a.desde.localeCompare(b.desde) || nombreDe(a).localeCompare(nombreDe(b)));
+
+  return `
+    <div class="page-head">
+      <div><h1>Novedades</h1><p class="sub">Todo lo que cargan los asesores. Confirmá o rechazá cada una.</p></div>
+      <button class="btn btn-outline btn-sm" onclick="App.exportarPedidos()">Exportar CSV</button>
+    </div>
+    <div class="toolbar">
+      <label class="check">Desde <input type="date" value="${esc(f.desde)}" onchange="App.setFiltro('desde', this.value)"></label>
+      <label class="check">Hasta <input type="date" value="${esc(f.hasta)}" onchange="App.setFiltro('hasta', this.value)"></label>
+      <select onchange="App.setFiltro('motivo', this.value)">
+        <option value="todos">Todos los motivos</option>
+        ${MOTIVOS.map((m) => `<option value="${m.id}" ${f.motivo === m.id ? "selected" : ""}>${esc(m.label)}</option>`).join("")}
+      </select>
+      <select onchange="App.setFiltro('estado', this.value)">
+        <option value="todos">Todos los estados</option>
+        <option value="pendiente" ${f.estado === "pendiente" ? "selected" : ""}>Pendientes</option>
+        <option value="confirmada" ${f.estado === "confirmada" ? "selected" : ""}>Confirmadas</option>
+        <option value="rechazada" ${f.estado === "rechazada" ? "selected" : ""}>Rechazadas</option>
+      </select>
+      <input type="text" id="buscar" placeholder="Buscar asesor…" value="${esc(f.buscar)}" oninput="App.setFiltroTexto('buscar', this.value)">
+    </div>
+    <div class="card table-card">
+      ${lista.length === 0 ? `<div class="empty-state"><div class="big">No hay novedades con estos filtros</div></div>` : `
+      <table>
+        <thead><tr><th>Asesor</th><th>Motivo</th><th>Fechas</th><th>Franja inactiva</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          ${lista.map((n) => `
+            <tr>
+              <td><div class="nombre">${esc(nombreDe(n))}</div>${n.obs ? `<div class="subtext" style="max-width:260px">${esc(n.obs)}</div>` : ""}</td>
+              <td>${chipMotivo(n.tipo)}</td>
+              <td style="white-space:nowrap">${esc(fmtRango(n))}</td>
+              <td style="white-space:nowrap">${esc(fmtHorario(n))}<div class="subtext">${esc(fmtDur(minutosPorDia(n)))} por día</div></td>
+              <td>${badgeEstado(n.estado)}</td>
+              <td><div class="rowactions">
+                <button class="btn btn-icon" title="Confirmar" aria-label="Confirmar" onclick="App.setEstado('${esc(n.id)}','confirmada')">✓</button>
+                <button class="btn btn-icon" title="Rechazar" aria-label="Rechazar" onclick="App.setEstado('${esc(n.id)}','rechazada')">✕</button>
+                <button class="btn btn-icon" title="Eliminar" aria-label="Eliminar" onclick="App.borrar('${esc(n.id)}')">🗑</button>
+              </div></td>
+            </tr>`).join("")}
+        </tbody>
+      </table>`}
+    </div>`;
+}
+
+/* ---------- TAB: RESUMEN MENSUAL ---------- */
+function datosResumen() {
+  const mes = state.mes;
+  const porAsesor = {}, totalesTipo = {};
+  let total = 0;
+  novedadesArray()
+    .filter((n) => n.estado !== "rechazada" && (!state.f.soloConf || n.estado === "confirmada"))
+    .forEach((n) => {
+      const pd = minutosPorDia(n);
+      diasDelRango(n.desde, n.hasta).forEach((d) => {
+        if (d.slice(0, 7) !== mes) return;
+        if (!state.f.contarFinde && esFinde(d)) return;
+        const r = (porAsesor[n.personaId] ||= { pid: n.personaId, nombre: nombreDe(n), total: 0, dias: new Set(), tipos: {} });
+        r.total += pd; r.dias.add(d);
+        r.tipos[n.tipo] = (r.tipos[n.tipo] || 0) + pd;
+        totalesTipo[n.tipo] = (totalesTipo[n.tipo] || 0) + pd;
+        total += pd;
+      });
+    });
+  return { filas: Object.values(porAsesor).sort((a, b) => b.total - a.total), totalesTipo, total };
+}
+
+function renderTabResumen() {
+  const { filas, totalesTipo, total } = datosResumen();
+  return `
+    <div class="page-head">
+      <div><h1>Resumen mensual</h1><p class="sub">Tiempo no operativo acumulado por asesor y por motivo</p></div>
+      <button class="btn btn-outline btn-sm" onclick="App.exportarResumen()">Exportar CSV</button>
+    </div>
+    <div class="toolbar">
+      <input type="month" value="${esc(state.mes)}" onchange="App.setMes(this.value)" style="padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:#fff;">
+      <label class="check"><input type="checkbox" ${state.f.soloConf ? "checked" : ""} onchange="App.setFiltro('soloConf', this.checked)"> Solo confirmadas</label>
+      <label class="check"><input type="checkbox" ${state.f.contarFinde ? "checked" : ""} onchange="App.setFiltro('contarFinde', this.checked)"> Contar sábados y domingos</label>
+    </div>
+    <div class="metrics-row">
+      <div class="card metric-card"><div class="n num">${esc(fmtDur(total))}</div><div class="l">Total no operativo del mes</div></div>
+      ${MOTIVOS.filter((m) => totalesTipo[m.id]).map((m) => `<div class="card metric-card"><div class="n num" style="color:${m.color}">${esc(fmtDur(totalesTipo[m.id]))}</div><div class="l">${esc(m.label)}</div></div>`).join("")}
+    </div>
+    <div class="card table-card">
+      ${filas.length === 0 ? `<div class="empty-state"><div class="big">Sin tiempo no operativo en este mes</div></div>` : `
+      <table>
+        <thead><tr><th>Asesor</th><th>Días</th><th>Total no operativo</th>${MOTIVOS.map((m) => `<th>${esc(m.label)}</th>`).join("")}</tr></thead>
+        <tbody>
+          ${filas.map((r) => `
+            <tr>
+              <td class="nombre">${esc(r.nombre)}</td>
+              <td class="num">${r.dias.size}</td>
+              <td class="num" style="font-weight:600; white-space:nowrap">${esc(fmtDur(r.total))}</td>
+              ${MOTIVOS.map((m) => `<td class="num" style="white-space:nowrap; color:${r.tipos[m.id] ? "var(--text)" : "var(--border)"}">${r.tipos[m.id] ? esc(fmtDur(r.tipos[m.id])) : "–"}</td>`).join("")}
+            </tr>`).join("")}
+        </tbody>
+      </table>`}
+    </div>
+    <p class="hint" style="margin-top:10px">Cada día se mide contra el turno del asesor (por defecto el configurado en Config). Las rechazadas nunca se cuentan.</p>`;
+}
+
+/* ---------- TAB: CONFIG ---------- */
+function renderTabConfig() {
+  const t = turnoDefecto();
+  return `
+    <div class="page-head"><div><h1>Config</h1><p class="sub">Ajustes del portal de novedades</p></div></div>
+    <div class="card form-card" style="max-width:520px">
+      <h3>Turno habitual</h3>
+      <p class="hint" style="margin-bottom:14px">Se usa para calcular cuánto dura un día completo y para las franjas con "inicio" o "fin" de turno vacíos. Aplica a las novedades nuevas.</p>
+      <form onsubmit="App.guardarTurno(event)">
+        <div class="field-row">
+          <div class="field"><label>Inicio</label><input required type="time" name="desde" value="${esc(t.desde)}"></div>
+          <div class="field"><label>Fin</label><input required type="time" name="hasta" value="${esc(t.hasta)}"></div>
+        </div>
+        <button class="btn btn-primary" type="submit">Guardar turno</button>
+      </form>
+    </div>
+    <div class="card form-card" style="max-width:520px; margin-top:16px">
+      <h3>Lista de asesores y clave</h3>
+      <p class="hint">Los nombres salen de la lista de asesores del portal de vacaciones, y la clave de administrador es la misma. Para cambiarlas, hacelo desde ese portal.</p>
+    </div>`;
+}
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+window.App = {
+  ir(screen) { state.screen = screen; state.adminLoginError = ""; render(); },
+  seleccionarAsesor(id) { state.asesorSeleccionado = id; state.form = formVacio(); render(); },
+
+  setMotivo(id) { state.form.tipo = id; state.form.todoDia = motivoDe(id).todoDia; state.form.error = ""; render(); },
+  setVarios(v) { state.form.varios = v; if (!v) state.form.hasta = state.form.fecha; render(); },
+  setTodoDia(v) { state.form.todoDia = v; state.form.error = ""; render(); },
+  setFecha(v) {
+    state.form.fecha = v;
+    if (!state.form.varios || state.form.hasta < v) state.form.hasta = v;
+    render();
+  },
+  setHasta(v) { state.form.hasta = v; render(); },
+  setCampo(k, v) {
+    state.form[k] = v;
+    const p = document.getElementById("preview");
+    if (p) p.innerHTML = calcPreview();
+  },
+
+  async enviar() {
+    const f = state.form;
+    const persona = personas[state.asesorSeleccionado];
+    f.error = "";
+    if (!persona) f.error = "Elegí tu nombre.";
+    else if (!f.fecha || !f.hasta) f.error = "Elegí la fecha.";
+    else if (f.hasta < f.fecha) f.error = "La fecha “hasta” no puede ser anterior a “desde”.";
+    else if (!f.todoDia && !f.horaDesde && !f.horaHasta) f.error = "Indicá la franja horaria: desde y/o hasta qué hora estás inactivo.";
+    else if (!f.todoDia && f.horaDesde && f.horaHasta && f.horaHasta <= f.horaDesde) f.error = "La hora “hasta” tiene que ser posterior a la hora “desde”.";
+    else if (f.tipo === "otro" && !f.obs.trim()) f.error = "Para “Otro motivo” escribí brevemente de qué se trata.";
+    if (f.error) { render(); return; }
+
+    f.enviando = true; render();
+    const t = turnoDefecto();
+    try {
+      await guardarNovedad({
+        personaId: state.asesorSeleccionado,
+        nombre: persona.nombre,
+        tipo: f.tipo,
+        desde: f.fecha,
+        hasta: f.hasta,
+        todoDia: f.todoDia,
+        horaDesde: f.todoDia ? "" : f.horaDesde,
+        horaHasta: f.todoDia ? "" : f.horaHasta,
+        turnoDesde: t.desde,
+        turnoHasta: t.hasta,
+        obs: f.obs.trim(),
+        estado: "pendiente",
+        creado: new Date().toISOString(),
+      });
+      state.form = formVacio();
+      toast("Novedad registrada");
+    } catch (e) {
+      f.enviando = false;
+      f.error = "No se pudo guardar. Revisá tu conexión y probá de nuevo.";
+    }
+    render();
+  },
+  async cancelar(id) {
+    const n = novedades[id];
+    if (!n || n.personaId !== state.asesorSeleccionado || n.estado !== "pendiente") return;
+    if (!confirm("¿Cancelar esta novedad?")) return;
+    try { await borrarNovedad(id); toast("Novedad cancelada"); } catch (e) { toast("No se pudo cancelar"); }
+  },
+
+  loginAdmin(e) {
+    e.preventDefault();
+    const clave = e.target.clave.value.trim();
+    if (clave === (config.clave || CLAVE_DEFAULT)) { state.screen = "admin"; state.adminLoginError = ""; }
+    else state.adminLoginError = "Clave incorrecta.";
+    render();
+  },
+  setTab(k) { state.adminTab = k; state.modal = null; render(); },
+  setMes(v) { if (v) { state.mes = v; render(); } },
+  setFiltro(k, v) { state.f[k] = v; render(); },
+  setFiltroTexto(k, v) { state.f[k] = v; render(); },
+  abrirCelda(pid, dia) { state.modal = { pid, dia }; render(); },
+  cerrarModal() { state.modal = null; render(); },
+  async setEstado(id, estado) {
+    try { await actualizarEstado(id, estado); toast(estado === "confirmada" ? "Confirmada" : "Rechazada"); } catch (e) { toast("No se pudo actualizar"); }
+  },
+  async borrar(id) {
+    if (!confirm("¿Eliminar esta novedad? No se puede deshacer.")) return;
+    try { await borrarNovedad(id); toast("Eliminada"); } catch (e) { toast("No se pudo eliminar"); }
+  },
+  async guardarTurno(e) {
+    e.preventDefault();
+    const desde = e.target.desde.value, hasta = e.target.hasta.value;
+    try { await update(ref(db, "novedades_config/turno"), { desde, hasta }); toast("Turno guardado"); } catch (err) { toast("No se pudo guardar"); }
+  },
+
+  exportarGrilla() {
+    const { dias, filas } = datosGrilla();
+    descargarCSV(`grilla-${state.mes}.csv`,
+      ["Asesor", ...dias.map((d) => d.num), "Días inactivos", "Horas inactivas"],
+      filas.map((r) => [
+        r.nombre,
+        ...dias.map((d) => (r.celdas[d.iso] || []).map((n) => `${motivoDe(n.tipo).cod}${n.todoDia ? "" : ` ${n.horaDesde || "ini"}-${n.horaHasta || "fin"}`}`).join(" + ")),
+        Object.keys(r.celdas).length, horasDec(r.total),
+      ]));
+  },
+  exportarResumen() {
+    const { filas } = datosResumen();
+    descargarCSV(`no-operativo-${state.mes}.csv`,
+      ["Asesor", "Días", "Horas no operativas", ...MOTIVOS.map((m) => `${m.label} (h)`)],
+      filas.map((r) => [r.nombre, r.dias.size, horasDec(r.total), ...MOTIVOS.map((m) => horasDec(r.tipos[m.id] || 0))]));
+  },
+  exportarPedidos() {
+    const f = state.f, ql = f.buscar.trim().toLowerCase();
+    const lista = novedadesArray()
+      .filter((n) => (!f.desde || n.hasta >= f.desde) && (!f.hasta || n.desde <= f.hasta))
+      .filter((n) => f.motivo === "todos" || n.tipo === f.motivo)
+      .filter((n) => f.estado === "todos" || n.estado === f.estado)
+      .filter((n) => !ql || nombreDe(n).toLowerCase().includes(ql))
+      .sort((a, b) => a.desde.localeCompare(b.desde));
+    descargarCSV(`novedades-${hoyISO()}.csv`,
+      ["Asesor", "Motivo", "Desde", "Hasta", "Hora desde", "Hora hasta", "Todo el día", "Min. por día", "Estado", "Comentario"],
+      lista.map((n) => [nombreDe(n), motivoDe(n.tipo).label, n.desde, n.hasta, n.horaDesde, n.horaHasta, n.todoDia ? "Sí" : "No", minutosPorDia(n), n.estado, n.obs]));
+  },
+};
+
+iniciarListeners();
+render();
+
+</script>
+</body>
+</html>
